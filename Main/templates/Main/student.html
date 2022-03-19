@@ -1,0 +1,247 @@
+{% include 'Main/base.html' %}
+{% load crispy_forms_tags %}
+<div class="m-1 ">
+    <div class="row">
+        <div class="col-md-12 mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Students</h5>
+                    <p class="card-text">{{text}}</p>
+                    <a href="/student#addStudent">
+                      <button class="btn btn-success mb-3">Add Student</button>
+                    </a>
+
+                    <table class="table table-hover table-bordered" id="table">
+                        <thead>
+                            <th> Name </th>
+                            <th> Email </th>
+                            <th> Phone </th>
+                            <th> Time Period </th>
+                            <th> Courses </th>
+                            <th> Joined Date </th>
+                            <th> Address </th>
+                            <th> Total Fee </th>
+                            <th> Paid Fee </th>
+                            <th> Status </th>
+                            <th> Remarks </th>
+                            <th> Added On </th>
+                            <th> Action </th>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td> {{student.name}} </td>
+                                <td> {{student.email}} </td>
+                                <td> {{student.phone}} </td>
+                                <td> {{student.time_period}} </td>
+                                <td> {% for c in student.courses.all %}
+                                    {{c.name}} , 
+                                  {% endfor %} </td>
+                                <td> {{student.joined_date}} </td>
+                                <td> {{student.address}} </td>
+                                <td> {{student.total_fee}} </td>
+                                <td> {{student.paid_fee}} </td>
+                                <td> 
+                                  <h6 class=" text-success text-bold " > {{student.status}} </h6> 
+                                  <br>
+                                  <div class="dropdown">
+                                    <a
+                                      class="btn btn-secondary dropdown-toggle"
+                                      href="#"
+                                      role="button"
+                                      id="dropdownMenuLink"
+                                      data-mdb-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      Change Status
+                                    </a>
+                                  
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                      {% comment %} <li><a class="dropdown-item" href="/toggle-student-status/{{student.id}}/Active">Active</a></li> {% endcomment %}
+                                      <li><a class="dropdown-item" href="/toggle-student-status/{{student.id}}/Inactive">Inactive</a></li>
+                                      <li><a class="dropdown-item" href="/toggle-student-status/{{student.id}}/Pending">Pending</a></li>
+                                      <li><a class="dropdown-item" href="/toggle-student-status/{{student.id}}/Started">Started</a></li>
+                                      <li><a class="dropdown-item" href="/toggle-student-status/{{student.id}}/Passed-Out">Passed Out</a></li>
+                                      <li> <a class="dropdown-item" href="/toggle-student-status/{{student.id}}/Expelled">Expelled</a></li>
+                                    
+                                    </ul>
+                                  </div>
+                                </td>
+                                <td> {{student.remarks}} </td>
+                                <td> {{student.added_on}} </td>
+                              
+                                <td>
+                                    <a href="update-student/{{student.id}}" class="btn btn-primary m-1"><i class="fa fa-edit"> </i></a>
+                                    <button type="button" class="btn btn-danger m-1" data-mdb-toggle="modal" data-mdb-target="#deleteModal{{student.id}}">
+                                     <i class="fa fa-trash"> </i>
+                                    </button>
+                                    <button type="button" class="btn btn-success m-1" data-mdb-toggle="modal" data-mdb-target="#infoModal{{student.id}}">
+                                      <i class="fa fa-info-circle"> </i>
+                                     </button>
+                                     <button type="button" onclick="printDiv({{student.id}})" class="btn btn-warning m-1" >
+                                      <i class="fa fa-print"> </i>
+                                     </button>
+                                    <button type="button" class="btn btn-secondary m-1" data-mdb-toggle="modal" data-mdb-target="#addModal{{student.id}}">
+                                      Add Payment
+                                    </button>
+
+
+                                    <!-- delete  Modal -->
+                                        <div class="modal fade" id="deleteModal{{student.id}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                          <div class="modal-dialog">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+                                                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                              </div>
+                                              <div class="modal-body">
+                                                Are you sure you want to delete student {{student.name}} ?
+                                              </div>
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                                                <a href="/delete-student/{{student.id}}" class="btn btn-danger m-1">Delete</a>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                          <!-- Add Payment  Modal -->
+                                          <div class="modal fade" id="addModal{{student.id}}" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                              <div class="modal-content">
+                                                <div class="modal-header">
+                                                  <h5 class="modal-title" id="exampleModalLabel">Add Paid amount</h5>
+                                                  <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  Enter amount to add {{student.name}} paid ?
+                                                  <form method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="id" value="{{student.id}}">
+                                                  <input type="number" name="fee" id="fee" class="form-control" required>
+                                                </div>
+                                                <div class="modal-footer">
+                                                  <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                                                  <input type="submit" class="btn btn-success m-1" value="Add Payment">
+                                                </form>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+
+                                          <!-- Student Info   Modal -->
+                                          <div class="modal fade" id="infoModal{{student.id}}" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                              <div class="modal-content">
+                                                <div class="modal-header">
+                                                  <h5 class="modal-title" id="exampleModalLabel">{{student.name}}</h5>
+                                                  <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body" id="student{{student.id}}">
+                                                  <table class="table table-striped"  >
+                                                    <tr>
+                                                      <td class="text-success fw-bold"  >Name</td>
+                                                      <td>{{student.name}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td class="text-success fw-bold"  >Email</td>
+                                                      <td>{{student.email}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td class="text-success fw-bold"  >Phone</td>
+                                                      <td>{{student.phone}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td class="text-success fw-bold"  >Courses</td>
+                                                      <td>
+                                                        {% for c in student.courses.all %}
+                                                          {{c.name}} ,
+                                                        {% endfor %}
+                                                      </td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td class="text-success fw-bold"  >Address</td>
+                                                      <td>{{student.address}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td class="text-success fw-bold"  >Status</td>
+                                                      <td>{{student.status}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td class="text-success fw-bold"  >Remarks</td>
+                                                      <td>{{student.remarks}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td class="text-success fw-bold"  >Joined On</td>
+                                                      <td>{{student.joined_date}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td class="text-success fw-bold"  >Total Fee</td>
+                                                      <td>{{student.total_fee}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td class="text-success fw-bold"  >Paid</td>
+                                                      <td>{{student.paid_fee}}</td>
+                                                    <tr>
+                                                      <td class="text-success fw-bold"  >Added On</td>
+                                                      <td>{{student.added_on}}</td>
+                                                    </tr>
+                                                 
+
+                                                  </table>
+                                                </div>
+                                                <div class="modal-footer">
+                                                  <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <h3 id="addStudent"  class="text-success fw-bold text-center">  Add Student </h3>
+                   <div class=" d-flex justify-content-center">
+                    <form method="POST" class="ml-5">
+                      {% csrf_token %}
+                      {{student_form | crispy}}
+                      <input type="submit" class="btn btn-success m-1" value="Add Student">
+                    </form>
+                   </div>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% include 'Main/footer.html' %}
+
+<script>
+  $(document).ready( function () {
+    $('#table').DataTable();
+    var mainInput = document.getElementById("id_joined_date");
+  
+  /* Initialize Datepicker with options */
+  mainInput.nepaliDatePicker();
+  } );
+
+  function printDiv(id) {
+    var divContents = document.getElementById("student"+id).innerHTML;
+    var a = window.open('', '', 'height=500, width=500');
+    a.document.write('<html>');
+    a.document.write('<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.11.0/mdb.min.css" rel="stylesheet"/>');
+    a.document.write('<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/> ');
+    a.document.write('<body>');
+    a.document.write(divContents);
+    a.document.write('</body></html>');
+    a.document.close();
+    a.print();
+}
+
+</script>

@@ -1,0 +1,257 @@
+{% include 'Main/base.html' %}
+
+<div class="container mt-3 mb-5">
+    
+        <div class="col-md-12">
+            <div class="row">
+            <div class="col-md-4">
+                <div class="card text-center" >
+                    <div class="card-body">
+                            <button class="btn btn-success btn-lg text-center">
+                                <i class="fas fa-user fa-3x"></i>
+                            </button>
+                      
+                            <h3 class="text-primary mt-3">
+                                Students:
+                                    {{students_count}}
+                            </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center" >
+                    <div class="card-body">
+                            <button class="btn btn-secondary btn-lg text-center">
+                                <i class="fas fa-book fa-3x"></i>
+                            </button>
+                      
+                            <h3 class="text-primary mt-3">
+                                Courses:
+                                    {{courses_count}}
+                            </h3>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="card text-center" >
+                    <div class="card-body">
+                            <button class="btn btn-danger btn-lg text-center">
+                                <i class="fas fa-clock fa-3x"></i>
+                            </button>
+                      
+                            <h3 class="text-primary mt-3">
+                                Time Periods:
+                                    {{timeperiods_count}}
+                            </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <div class="row">
+        <div class="col-md-4">
+            <div class="card text-center" >
+                <div class="card-body">
+                        <button class="btn btn-success btn-lg text-center">
+                            <i class="fas fa-check fa-3x"></i>
+                        </button>
+                  
+                        <h3 class="text-primary mt-3">
+                            Passed Students:
+                                {{passed_students}}
+                        </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-center" >
+                <div class="card-body">
+                        <button class="btn btn-danger btn-lg text-center">
+                            <i class="fas fa-times fa-3x"></i>
+                        </button>
+                  
+                        <h3 class="text-danger mt-3">
+                           In-Active Students:
+                                {{inactive_students}}
+                        </h3>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-4">
+            <div class="card text-center" >
+                <div class="card-body">
+                        <button class="btn btn-inherit btn-lg text-center">
+                            <i class="fas fa-check-square fa-3x"></i>
+                        </button>
+                  
+                        <h3 class="text-primary mt-3">
+                            Running Class (Started) Students:
+                                {{started_students}}
+                        </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="col-md-12 card p-3">
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="text-success">Recently Added Students</h4>
+                <table class="table table-hover">
+                    <thead>
+                        <th>S.N</th>
+                        <th>Name</th>
+                        <th>Courses</th>
+                        <th>Info</th>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{student.name}}</td>
+                                <td>
+                                    {% for course in student.courses.all %}
+                                        {{course.name}} , 
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-primary m-2" data-mdb-toggle="modal" data-mdb-target="#infoModal{{student.id}}">
+                                        <i class="fa fa-info-circle"> </i>
+                                       </button>
+                                     <!-- Student Info   Modal -->
+                                     <div class="modal fade" id="infoModal{{student.id}}" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="exampleModalLabel">{{student.name}}</h5>
+                                              <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <table class="table table-striped">
+                                                <tr>
+                                                  <td class="text-success fw-bold" class="text-secondary">Name</td>
+                                                  <td>{{student.name}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="text-success fw-bold" class="text-secondary">Email</td>
+                                                  <td>{{student.email}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="text-success fw-bold" class="text-secondary">Phone</td>
+                                                  <td>{{student.phone}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="text-success fw-bold" class="text-secondary">Courses</td>
+                                                  <td>
+                                                    {% for c in student.courses.all %}
+                                                      {{c.name}} ,
+                                                    {% endfor %}
+                                                  </td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="text-success fw-bold" class="text-secondary">Address</td>
+                                                  <td>{{student.address}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="text-success fw-bold" class="text-secondary">Status</td>
+                                                  <td>{{student.status}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="text-success fw-bold" class="text-secondary">Remarks</td>
+                                                  <td>{{student.remarks}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="text-success fw-bold" class="text-secondary">Joined On</td>
+                                                  <td>{{student.joined_date}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="text-success fw-bold" class="text-secondary">Total Fee</td>
+                                                  <td>{{student.total_fee}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td class="text-success fw-bold" class="text-secondary">Paid</td>
+                                                  <td>{{student.paid_fee}}</td>
+                                                <tr>
+                                                  <td class="text-success fw-bold" class="text-secondary">Added On</td>
+                                                  <td>{{student.added_on}}</td>
+                                                </tr>
+                                             
+
+                                              </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        
+        </div>
+    </div>
+
+    <div class="col-md-12 card">
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="text-secondary">Time Period Wise Students</h4>
+                <table class="table table-hover">
+                    <thead>
+                        <th>S.N</th>
+                        <th>Time Period</th>
+                        <th>Student Count</th>
+                    </thead>
+                    <tbody>
+
+                        {% for name, value in timeperiod_wise_student_count.items %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{name}}</td>
+                                    <td>{{value}}</td>
+                                </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <h4 class="text-secondary">CourseWise Students</h4>
+                <table class="table table-hover">
+                    <thead>
+                        <th>S.N</th>
+                        <th>Course</th>
+                        <th>Student Count</th>
+                    </thead>
+                    <tbody>
+
+                        {% for name, value in course_wise_student_count.items %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{name}}</td>
+                                    <td>{{value}}</td>
+                                </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'Main/footer.html' %}

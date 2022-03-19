@@ -1,0 +1,67 @@
+{% include 'Main/base.html' %}
+{% load crispy_forms_tags %}
+<div class="container ">
+    <div class="row">
+        <div class="col-md-12 mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage timeperiods</h5>
+                    <p class="card-text">{{text}}</p>
+                    <button class="btn btn-primary mb-3" data-mdb-toggle="modal" data-mdb-target="#exampleModal">Add timeperiod</button>
+
+                    <table class="table table-hover" id="table">
+                        <thead>
+                            <th> Name </th>
+                            <th> Description </th>
+                            <th> Action </th>
+                        </thead>
+                        <tbody>
+                            {% for timeperiod in timeperiods %}
+                            <tr>
+                                <td> {{timeperiod.name}} </td>
+                                <td> {{timeperiod.description}} </td>
+                                <td>
+                                    <a href="update-timeperiod/{{timeperiod.id}}" class="btn btn-primary">Edit</a>
+                                    <a href="/delete-timeperiod/{{timeperiod.id}}" class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add New timeperiod</h5>
+          <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form method="POST">
+                {% csrf_token %}
+                {{timeperiod_form | crispy}}
+                
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Add</button>
+           
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% include 'Main/footer.html' %}
+
+<script>
+  $(document).ready( function () {
+    $('#table').DataTable();
+  } );
+</script>

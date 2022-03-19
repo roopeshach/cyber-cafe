@@ -1,0 +1,29 @@
+{% include 'Main/base.html' %}
+{% load crispy_forms_tags %}
+<div class="container ">
+    <div class="row">
+        <div class="col-md-12 mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Edit Student <span class="text-primary"> {{student.name}}</span></h5>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{form | crispy}}
+                        <button type="submit" class="btn btn-primary m-3">Update</button>
+                    </form>
+                   
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+
+
+{% include 'Main/footer.html' %}
+<script>
+    var mainInput = document.getElementById("id_joined_date");
+  
+    /* Initialize Datepicker with options */
+    mainInput.nepaliDatePicker();
+</script>
